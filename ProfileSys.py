@@ -28,19 +28,27 @@ with app.app_context():
 # Serve HTML Page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('userCreate.html')
 
-# Register Route
+# Register Route (POST method)
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
+    # Check if the user already exists
+    user_exists = User.query.filter_by(username=data['username']).first()
+    if user_exists:
+        return jsonify({'message': 'Username already exists.'}), 400
+    
+    # Hash the password before storing it
     hashed_pw = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    # Create a new user in the database
     new_user = User(username=data['username'], password=hashed_pw)
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'message': 'User registered'}), 201
+    
+    return jsonify({'message': 'User registered successfully.'})
 
-# Login Route
+# Login Route (POST method)
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -49,27 +57,6 @@ def login():
         access_token = create_access_token(identity=user.id)
         return jsonify({'token': access_token, 'user': {'id': user.id, 'username': user.username}})
     return jsonify({'message': 'Invalid credentials'}), 401
-
-# Get User Profile
-@app.route('/profile', methods=['GET'])
-@jwt_required()
-def profile():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    return jsonify({'id': user.id, 'username': user.username})
-
-# Update Profile
-@app.route('/profile/update', methods=['PUT'])
-@jwt_required()
-def update_profile():
-    user_id = get_jwt_identity()
-    data = request.json
-    user = User.query.get(user_id)
-    
-    user.username = data.get('username', user.username)
-    
-    db.session.commit()
-    return jsonify({'message': 'Profile updated', 'user': {'id': user.id, 'username': user.username}})
 
 if __name__ == '__main__':
     app.run(debug=True)
