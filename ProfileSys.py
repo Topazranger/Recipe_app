@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
@@ -24,6 +24,11 @@ class User(db.Model):
 # Create db Tables
 with app.app_context():
     db.create_all()
+
+# Serve HTML Page
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # Register Route
 @app.route('/register', methods=['POST'])
