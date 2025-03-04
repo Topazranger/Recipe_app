@@ -1,7 +1,6 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -10,10 +9,12 @@ CORS(app)
 # Database Config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = '101010'
+app.secret_key = '432870401928473086574'
+
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
 
 # User table
 class User(db.Model):
@@ -30,10 +31,14 @@ with app.app_context():
 def index():
     return render_template('userCreate.html')
 
-# Register Route (POST method)
+# Register Route
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
+    # Check if passwords match
+    if data['password'] != data['RepeatPassword']:
+        return jsonify({'message': 'Passwords do not match.'}), 400
+    
     # Check if the user already exists
     user_exists = User.query.filter_by(username=data['username']).first()
     if user_exists:
@@ -46,17 +51,26 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     
-    return jsonify({'message': 'User registered successfully.'})
+    return jsonify({'success': True, 'message': 'User registered successfully.'})
 
-# Login Route (POST method)
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity=user.id)
-        return jsonify({'token': access_token, 'user': {'id': user.id, 'username': user.username}})
-    return jsonify({'message': 'Invalid credentials'}), 401
+        # Set session values
+        session['user_id'] = user.id
+        session['username'] = user.username
+        return jsonify({'success': True, 'message': 'Login successful'})
+    return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
+
+@app.route('/mainmenu')
+def mainmenu():
+    if 'username' not in session:
+        return redirect('/')
+    username = session['username']
+    return render_template('MainMenu.html', username=username)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

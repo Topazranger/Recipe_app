@@ -16,6 +16,10 @@
         <label for="Password">Password:</label>
         <br>
         <input type="password" id="Password" name="Password" required>
+        <br>
+        <label for="Password">Repeat Password:</label>
+        <br>
+        <input type="password" id="RepeatPassword" name="RepeatPassword" required>
         <br><br>
         <input type="submit" value="Submit">
     </form>
@@ -34,58 +38,62 @@
     </form>
 
     <script>
-        // When the register form is submitted
-        document.getElementById('registerForm').addEventListener('submit', function(event) {
-            // Prevent the default form submission (which would reload the page)
-            event.preventDefault();
-    
-            // Get the username and password values from the form
-            const username = document.getElementById('Username').value;
-            const password = document.getElementById('Password').value;
-    
-            // Send the registration data to the backend using the Fetch API
-            fetch('/register', {
-                method: 'POST', // We're sending a POST request
-                headers: {
-                    'Content-Type': 'application/json', // The data is in JSON format
-                },
-                body: JSON.stringify({ username, password }) // Send the username and password as JSON
-            })
-            .then(response => response.json())  // Parse the response from the backend as JSON
-            .then(data => {
-                alert(data.message);  // Show the response message from the backend
-            })
-            .catch(error => console.error('Error:', error)); // Handle any error that occurs during the request
-        });
+// When the register form is submitted
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent page reload
 
-        // When the login form is submitted
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            // Prevent the default form submission (which would reload the page)
-            event.preventDefault();
-    
-            // Get the username and password values from the form
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-    
-            // Send the login data to the backend using the Fetch API
-            fetch('/login', {
-                method: 'POST', // We're sending a POST request
-                headers: {
-                    'Content-Type': 'application/json', // The data is in JSON format
-                },
-                body: JSON.stringify({ username, password }) // Send the username and password as JSON
-            })
-            .then(response => response.json())  // Parse the response from the backend as JSON
-            .then(data => {
-                if (data.token) { // If the login is successful, the backend will return a token
-                    alert(`Logged in as ${data.user.username}`);  // Show a success message with the username
-                    localStorage.setItem('token', data.token); // Store the JWT token in localStorage for future requests
-                } else {
-                    alert(data.message);  // If there's an error, show the error message
-                }
-            })
-            .catch(error => console.error('Error:', error)); // Handle any error that occurs during the request
-        });
+    // Get the values from the form
+    const username = document.getElementById('Username').value;
+    const password = document.getElementById('Password').value;
+    const rpassword = document.getElementById('RepeatPassword').value;
+
+    // Check passwords before sending to the backend
+    if (password !== rpassword) {
+        alert("Passwords do not match!");  // Alert the user
+        return;  // Stop the function from continuing
+    }
+
+    // Send the registration data to the backend
+    fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, RepeatPassword: rpassword }) 
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/mainmenu';  // Redirect to MainMenu.html on success
+        } else {
+            alert(data.message);  // Show the response message from the backend
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// When the login form is submitted
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent page reload
+
+    // Get the values from the form
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    // Send the login data to the backend
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/mainmenu';
+        } else {
+            alert(data.message);  // Show the response message from the backend
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
     </script>
 </body>
 </html>
