@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Pantry</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Virtual Pantry</h1>
+    
+    <ul id="pantry-list">
+        {% for item in pantry %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <input type="text" id="item-input" placeholder="Enter ingredient">
+    <button onclick="addItem()">Add Item</button>
+    <button onclick="clearPantry()">Clear Pantry</button>
+
+    <script>
+        async function addItem() {
+            const item = document.getElementById("item-input").value;
+            if (!item) return alert("Enter an ingredient!");
+
+            const response = await fetch("/api/pantry/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ item: item })
+            });
+
+            if (response.ok) {
+                location.reload();
+            }
+        }
+
+        async function clearPantry() {
+            await fetch("/api/pantry/clear", { method: "DELETE" });
+            location.reload();
+        }
+    </script>
+</body>
+</html>
