@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <link rel="stylesheet" href="templates/style.css">
+</head>
+<body>
+    <h1>Countdown Timer</h1>
+
+    <label for="minutes">Minutes:</label>
+    <input type="number" id="minutes" min="0" value="1">
+    <label for="seconds">Seconds:</label>
+    <input type="number" id="seconds" min="0" max="59" value="0">
+    <button onclick="startTimer()">Start Timer</button>
+
+    <h2 id="countdown">00:00</h2>
+
+    <script>
+        let timerInterval;
+
+        function startTimer() {
+            const minutes = parseInt(document.getElementById('minutes').value);
+            const seconds = parseInt(document.getElementById('seconds').value);
+            let totalSeconds = minutes * 60 + seconds;
+
+            clearInterval(timerInterval); // Clear any previous timers
+
+            if (isNaN(totalSeconds) || totalSeconds <= 0) {
+                alert("Please enter a valid time.");
+                return;
+            }
+
+            timerInterval = setInterval(() => {
+                let mins = Math.floor(totalSeconds / 60);
+                let secs = totalSeconds % 60;
+
+                document.getElementById('countdown').textContent = 
+                    String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('countdown').textContent = "TIME'S UP!";
+                    alert("Timer finished!");
+                }
+
+                totalSeconds--;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

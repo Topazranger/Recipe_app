@@ -64,6 +64,11 @@ def login():
         return jsonify({'success': True, 'message': 'Login successful'})
     return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
 
+# Timer
+@app.route('/timer')
+def timer():
+    return render_template('timer.html')
+
 @app.route('/mainmenu')
 def mainmenu():
     if 'username' not in session:
