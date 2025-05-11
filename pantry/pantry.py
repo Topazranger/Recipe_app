@@ -5,34 +5,53 @@ app = Flask(__name__)
 # ✅ Define an empty list to store pantry items
 pantry_items = []  
 
+recipes = [
+    {
+        "name": "Carbonara",
+        "ingredients": ["Tagliatelle", "egg", "parmesan", "bacon", "black pepper"]
+    },
+    {
+        "name": "French Toast",
+        "ingredients": ["Bread", "egg", "milk", "cinnamon", "butter"]
+    },
+    {
+        "name": "Sandwich",
+        "ingredients": ["Bread", "butter", "lettuce", "Ketchup", "Mayonaise", "Beef"]
+    }
+]
+
 @app.route('/')
 def home():
-    return render_template('index.html', pantry=pantry_items)
+    return render_template('index.html', pantry=pantry_items, recipes=recipes)
 
+@app.route('/api/pantry/add', methods=['POST'])
+def add_ingredient():
+    data = request.get_json()
+    ingredient = data.get('ingredient')
+    if ingredient:
+        pantry_items.append(ingredient)
+        return jsonify({"message": f"{ingredient} added to pantry."}), 201
+    return jsonify({"error": "No ingredient provided."}), 400
 
-
-# ✅ Get all pantry items
 @app.route('/api/pantry', methods=['GET'])
 def get_pantry():
     return jsonify({"pantry": pantry_items})
 
-# ✅ Add an item to the pantry
-@app.route('/api/pantry/add', methods=['POST'])
-def add_pantry_item():
-    data = request.json
-    item = data.get("item")  # Get item name from request body
+@app.route('/api/recipes/from-pantry', methods=['GET'])
+def get_recipes_from_pantry():
+    matching_recipes = []
+    for recipe in recipes:
+        if any(ingredient in pantry_items for ingredient in recipe['ingredients']):
+            matching_recipes.append(recipe)
 
-    if not item:
-        return jsonify({"error": "Item name is required"}), 400
+    if not matching_recipes:
+        return jsonify({"message": "No recipes found with current pantry items.", "matching_recipes": []})
 
-    pantry_items.append(item)  # ✅ Append item to the list
-    return jsonify({"message": f"'{item}' added to pantry!", "pantry": pantry_items}), 201
+    return jsonify({"matching_recipes": matching_recipes})
 
-# ✅ Clear all pantry items
-@app.route('/api/pantry/clear', methods=['DELETE'])
-def clear_pantry():
-    pantry_items.clear()  # ✅ Clear the list
-    return jsonify({"message": "Pantry cleared!"}), 200
+@app.route('/api/recipes', methods=['GET'])
+def get_recipes():
+    return jsonify({"recipes": recipes})
 
 if __name__ == '__main__':
     app.run(debug=True)
