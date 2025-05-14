@@ -2,42 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Pantry</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Pantry & Recipes</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { margin-top: 30px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
 </head>
 <body>
-    <h1>Virtual Pantry</h1>
-    
-    <ul id="pantry-list">
-        {% for item in pantry %}
-            <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
+    <h1>My Pantry</h1>
+    <input type="text" id="ingredient-input" placeholder="Enter ingredient">
+    <button onclick="addIngredient()">Add Ingredient</button>
 
-    <input type="text" id="item-input" placeholder="Enter ingredient">
-    <button onclick="addItem()">Add Item</button>
-    <button onclick="clearPantry()">Clear Pantry</button>
+    <ul id="pantry-list"></ul>
+
+    <h2>Recipes You Can Make</h2>
+    <button onclick="fetchRecipes()">Check Recipes</button>
+    <ul id="recipe-list"></ul>
 
     <script>
-        async function addItem() {
-            const item = document.getElementById("item-input").value;
-            if (!item) return alert("Enter an ingredient!");
+        // Fetch pantry items on load
+        window.onload = () => {
+            loadPantry();
+        };
 
-            const response = await fetch("/api/pantry/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ item: item })
-            });
-
-            if (response.ok) {
-                location.reload();
-            }
+        function loadPantry() {
+            fetch('/api/pantry')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('pantry-list');
+                    list.innerHTML = '';
+                    data.pantry.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        list.appendChild(li);
+                    });
+                });
         }
 
-        async function clearPantry() {
-            await fetch("/api/pantry/clear", { method: "DELETE" });
-            location.reload();
+        // Add ingredient to pantry
+        function addIngredient() {
+            const input = document.getElementById('ingredient-input');
+            const ingredient = input.value.trim();
+            if (!ingredient) return;
+
+            fetch('/api/pantry/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ingredient: ingredient })
+            })
+            .then(res => res.json())
+            .then(data => {
+                loadPantry();
+                input.value = '';
+            });
+        }
+
+        // Fetch recipes matching pantry
+        function fetchRecipes() {
+            fetch('/api/recipes/from-pantry')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('recipe-list');
+                    list.innerHTML = '';
+                    if (data.matching_recipes.length === 0) {
+                        const li = document.createElement('li');
+                        li.textContent = 'No recipes found.';
+                        list.appendChild(li);
+                    } else {
+                        data.matching_recipes.forEach(recipe => {
+                            const li = document.createElement('li');
+                            li.textContent = recipe.name;
+                            list.appendChild(li);
+                        });
+                    }
+                });
         }
     </script>
 </body>
