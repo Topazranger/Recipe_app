@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
-    <h1>Welcome!</h1>
+    <h1>Welcome, {{ username }}!</h1>
     <form id="menuForm">
-    <button id="Pantry" onclick="window.location.href='pantry'">Pantry</button>
-    <button id="Recipes">Recipes</button>
-    <button id="Shopping List">Shopping List</button>
-    <button id="Recipes">Recipes</button>
-    <button id="Timers">Timers</button>
-    <button id="Settings">Settings</button>
-    <button id="Logout">Logout</button></form>
+        <button type="button" onclick="window.location.href='{{ url_for('pantry_page') }}'">Pantry</button>
+        <button type="button" onclick="window.location.href='#'">Recipes</button>
+        <button type="button" onclick="window.location.href='#'">Shopping List</button>
+        <button type="button" onclick="window.location.href='{{ url_for('timer') }}'">Timers</button>
+        <button type="button" onclick="window.location.href='#'">Settings</button>
+        <button type="button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    </form>
 </body>
 </html>
