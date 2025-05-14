@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node svr.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "flask": "^0.2.10"
+  }
+}

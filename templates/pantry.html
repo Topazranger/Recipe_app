@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pantry & Recipes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>My Pantry</h1>
+    <input type="text" id="ingredient-input" placeholder="Enter ingredient">
+    <button onclick="addIngredient()">Add Ingredient</button>
+
+    <ul id="pantry-list"></ul>
+
+    <h2>Recipes You Can Make</h2>
+    <button onclick="fetchRecipes()">Check Recipes</button>
+    <ul id="recipe-list"></ul>
+
+    <script>
+        window.onload = () => {
+            loadPantry();
+        };
+
+        function loadPantry() {
+            fetch('/api/pantry')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('pantry-list');
+                    list.innerHTML = '';
+                    data.pantry.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        function addIngredient() {
+            const input = document.getElementById('ingredient-input');
+            const ingredient = input.value.trim();
+            if (!ingredient) return;
+
+            fetch('/api/pantry/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ingredient: ingredient })
+            })
+            .then(res => res.json())
+            .then(data => {
+                loadPantry();
+                input.value = '';
+            });
+        }
+
+        function fetchRecipes() {
+            fetch('/api/recipes/from-pantry')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('recipe-list');
+                    list.innerHTML = '';
+                    if (data.matching_recipes.length === 0) {
+                        const li = document.createElement('li');
+                        li.textContent = 'No recipes found.';
+                        list.appendChild(li);
+                    } else {
+                        data.matching_recipes.forEach(recipe => {
+                            const li = document.createElement('li');
+                            li.textContent = recipe.name;
+                            list.appendChild(li);
+                        });
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
