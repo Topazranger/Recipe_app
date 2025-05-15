@@ -1,99 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up and Login</title>
-</head>
-<body>
-    <h1>Register</h1>
-    <form id="registerForm">
-        <label for="Username">Username:</label>
-        <br>
-        <input type="text" id="Username" name="Username" required>
-        <br>
-        <label for="Password">Password:</label>
-        <br>
-        <input type="password" id="Password" name="Password" required>
-        <br>
-        <label for="Password">Repeat Password:</label>
-        <br>
-        <input type="password" id="RepeatPassword" name="RepeatPassword" required>
-        <br><br>
-        <input type="submit" value="Submit">
-    </form>
-    
-    <h1>Login</h1>
-    <form id="loginForm">
-        <label for="loginUsername">Username:</label>
-        <br>
-        <input type="text" id="loginUsername" name="username" required>
-        <br>
-        <label for="loginPassword">Password:</label>
-        <br>
-        <input type="password" id="loginPassword" name="password" required>
-        <br><br>
-        <button type="submit">Login</button>
-    </form>
-
-    <script>
-// When the register form is submitted
-document.getElementById('registerForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent page reload
-
-    // Get the values from the form
-    const username = document.getElementById('Username').value;
-    const password = document.getElementById('Password').value;
-    const rpassword = document.getElementById('RepeatPassword').value;
-
-    // Check passwords before sending to the backend
-    if (password !== rpassword) {
-        alert("Passwords do not match!");  // Alert the user
-        return;  // Stop the function from continuing
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #F5F5F5;
     }
 
-    // Send the registration data to the backend
-    fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, RepeatPassword: rpassword }) 
-    })
-    .then(response => response.json())
-    .then(data => {
+    .auth-container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      background-color: #8BC34A;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .toggle a {
+      color: #8BC34A;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .message {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2 id="form-title">Create Account</h2>
+
+    <div id="form">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <input type="password" id="repeatPassword" placeholder="Repeat Password">
+
+      <button onclick="submitForm()">Register</button>
+    </div>
+
+    <div class="toggle">
+      Already have an account? <a onclick="toggleForm()">Login</a>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    let isRegistering = true;
+
+    function toggleForm() {
+      isRegistering = !isRegistering;
+      const formTitle = document.getElementById('form-title');
+      const repeatPassword = document.getElementById('repeatPassword');
+      const btn = document.querySelector('button');
+      const toggleText = document.querySelector('.toggle');
+
+      if (isRegistering) {
+        formTitle.textContent = 'Create Account';
+        repeatPassword.style.display = 'block';
+        btn.textContent = 'Register';
+        toggleText.innerHTML = `Already have an account? <a onclick="toggleForm()">Login</a>`;
+      } else {
+        formTitle.textContent = 'Login';
+        repeatPassword.style.display = 'none';
+        btn.textContent = 'Login';
+        toggleText.innerHTML = `Don't have an account? <a onclick="toggleForm()">Register</a>`;
+      }
+    }
+
+    async function submitForm() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const repeatPassword = document.getElementById('repeatPassword').value;
+
+      const message = document.getElementById('message');
+      message.textContent = '';
+
+      try {
+        const endpoint = isRegistering ? '/register' : '/login';
+        const payload = isRegistering
+          ? { username, password, RepeatPassword: repeatPassword }
+          : { username, password };
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
         if (data.success) {
-            window.location.href = '/mainmenu';  // Redirect to MainMenu.html on success
+          window.location.href = '/mainmenu';
         } else {
-            alert(data.message);  // Show the response message from the backend
+          message.textContent = data.message;
         }
-    })
-    .catch(error => console.error('Error:', error));
-});
-
-// When the login form is submitted
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent page reload
-
-    // Get the values from the form
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-
-    // Send the login data to the backend
-    fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = '/mainmenu';
-        } else {
-            alert(data.message);  // Show the response message from the backend
-        }
-    })
-    .catch(error => console.error('Error:', error));
-});
-    </script>
+      } catch (error) {
+        message.textContent = 'An error occurred. Please try again.';
+      }
+    }
+  </script>
 </body>
 </html>

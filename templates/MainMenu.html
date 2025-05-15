@@ -11,8 +11,8 @@
     <h1>Welcome, {{ username }}!</h1>
     <form id="menuForm">
         <button type="button" onclick="window.location.href='{{ url_for('pantry_page') }}'">Pantry</button>
-        <button type="button" onclick="window.location.href='#'">Recipes</button>
-        <button type="button" onclick="window.location.href='#'">Shopping List</button>
+        <button type="button" onclick="window.location.href='{{ url_for('all_recipes') }}'">Recipes</button>
+        <button type="button" onclick="window.location.href='{{ url_for('shoppinglist') }}'">Shopping List</button>
         <button type="button" onclick="window.location.href='{{ url_for('timer') }}'">Timers</button>
         <button type="button" onclick="window.location.href='#'">Settings</button>
         <button type="button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>

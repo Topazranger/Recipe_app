@@ -16,34 +16,80 @@
     <input type="number" id="seconds" min="0" max="59" value="0">
     <button onclick="startTimer()">Start Timer</button>
 
-    <h2 id="countdown">00:00</h2>
+    <div class="timer-container">
+        <svg class="progress-ring" width="200" height="200">
+            <circle class="progress-ring__circle" stroke="#8BC34A" stroke-width="8" fill="transparent" r="90" cx="100" cy="100" />
+        </svg>
+        <h2 id="countdown" class="countdown-text">00:00</h2>
+    </div>
+
     <button type="button" onclick="window.location.href='{{ url_for('mainmenu') }}'">Home</button>
+
+    <style>
+        .timer-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+        }
+
+        .progress-ring__circle {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .countdown-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
 
     <script>
         let timerInterval;
+        const circle = document.querySelector('.progress-ring__circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = `${circumference}`;
+
+        function setProgress(percent) {
+            const offset = circumference - percent * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
 
         function startTimer() {
             const minutes = parseInt(document.getElementById('minutes').value);
             const seconds = parseInt(document.getElementById('seconds').value);
             let totalSeconds = minutes * 60 + seconds;
+            let initialTotal = totalSeconds;
 
-            clearInterval(timerInterval); // Clear any previous timers
+            clearInterval(timerInterval);
 
             if (isNaN(totalSeconds) || totalSeconds <= 0) {
                 alert("Please enter a valid time.");
                 return;
             }
 
+            setProgress(1); // full circle
+
             timerInterval = setInterval(() => {
                 let mins = Math.floor(totalSeconds / 60);
                 let secs = totalSeconds % 60;
 
-                document.getElementById('countdown').textContent = 
+                document.getElementById('countdown').textContent =
                     String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+                setProgress(totalSeconds / initialTotal);
 
                 if (totalSeconds <= 0) {
                     clearInterval(timerInterval);
                     document.getElementById('countdown').textContent = "TIME'S UP!";
+                    setProgress(0);
                     alert("Timer finished!");
                 }
 

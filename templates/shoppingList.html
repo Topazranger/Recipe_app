@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .list-item span {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .crossed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        button.remove-btn {
+            margin-left: 10px;
+            background-color: #f8d7da;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            margin-right: 8px;
+        }
+
+        button.add-btn {
+            padding: 8px 12px;
+            background-color: #8BC34A;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping List</h1>
+
+    <input type="text" id="item-input" placeholder="Add ingredient...">
+    <button class="add-btn" onclick="addItem()">Add</button>
+
+    <ul id="shopping-list"></ul>
+
+    <button onclick="window.location.href='{{ url_for('mainmenu') }}'">Back to Menu</button>
+
+    <script>
+        function addItem() {
+            const input = document.getElementById('item-input');
+            const value = input.value.trim();
+            if (!value) return;
+
+            const list = document.getElementById('shopping-list');
+            const li = document.createElement('li');
+            li.classList.add('list-item');
+
+            const span = document.createElement('span');
+            span.textContent = value;
+            span.onclick = () => span.classList.toggle('crossed');
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.classList.add('remove-btn');
+            removeBtn.onclick = () => li.remove();
+
+            li.appendChild(span);
+            li.appendChild(removeBtn);
+            list.appendChild(li);
+
+            input.value = '';
+        }
+    </script>
+</body>
+</html>

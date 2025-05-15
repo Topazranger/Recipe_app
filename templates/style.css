@@ -1,0 +1,320 @@
+/* General Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: #212121;
+    line-height: 1.6;
+    padding: 16px;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    margin-right: 8px;
+  }
+  
+  button.home-btn {
+    background-color: #E9ECEF;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  /* Search bar */
+  .search-box {
+    background-color: #F1F3F5;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    margin-left: 8px;
+    width: 100%;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+  }
+  
+  .tab {
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .tab.active {
+    border-color: #212121;
+  }
+  
+  /* Recipe Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .card {
+    background-color: #B0BEC5;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #212121;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .card.highlight {
+    background-color: #8BC34A;
+  }
+  
+  /* Floating Add Button */
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: #8BC34A;
+    color: #000;
+    font-size: 24px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  /* Footer buttons */
+  .footer {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    padding: 16px;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .footer button {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .add-to-cart {
+    background-color: #F1F3F5;
+    color: #999;
+  }
+  
+  .checkout {
+    background-color: #8BC34A;
+    color: #000;
+  }
+  
+  /* Profile Styles */
+  .profile {
+    text-align: center;
+    padding: 24px;
+  }
+  
+  .profile img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+  }
+  
+  .preferences {
+    text-align: left;
+    margin: 24px 0;
+  }
+  
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .virtual-pantry-button {
+    width: 100%;
+    background-color: #8BC34A;
+    border: none;
+    padding: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  /* Toggle Switch */
+  .toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #B0BEC5;
+    border-radius: 34px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+  
+  .switch input:checked + .slider {
+    background-color: #8BC34A;
+  }
+  
+  .switch input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+  
+    /* Recipe Details */
+
+    .recipe-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .recipe-container h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    .recipe-container img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+    
+    .recipe-container p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    
+    .recipe-container strong {
+        color: #444;
+    }
+    
+    .recipe-container h2 {
+        margin-top: 30px;
+        font-size: 22px;
+        color: #4a4a4a;
+    }
+    
+    .recipe-container ul, 
+    .recipe-container ol {
+        padding-left: 20px;
+        margin-top: 10px;
+    }
+    
+    .recipe-container li {
+        margin-bottom: 8px;
+    }
+    
+    .recipe-container a {
+        display: inline-block;
+        margin-top: 30px;
+        text-decoration: none;
+        background-color: #91c848;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+    
+    .recipe-container a:hover {
+        background-color: #7bb73d;
+    }    
+
+
+    /* Recipe item layout */
+.recipe-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/* Thumbnail image next to recipe link */
+/* Default recipe image size for detail pages */
+.recipe-thumb {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .pantry-page .recipe-thumb {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 8px;
+    margin-right: 12px;
+}

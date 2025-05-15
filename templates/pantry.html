@@ -5,8 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantry & Recipes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .recipe-thumb {
+          width: 200px;
+          height: 200px;
+          object-fit: cover;
+          border-radius: 4px;
+          margin-right: 10px;
+          vertical-align: middle;
+        }
+        .recipe-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 8px;
+        }
+      </style>
 </head>
-<body>
+<body class="pantry-page">
     <h1>My Pantry</h1>
     <input type="text" id="ingredient-input" placeholder="Enter ingredient">
     <button onclick="addIngredient()">Add Ingredient</button>
@@ -31,11 +47,18 @@
                     list.innerHTML = '';
                     data.pantry.forEach(item => {
                         const li = document.createElement('li');
-                        li.textContent = item;
+                        li.textContent = item + ' ';
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.textContent = 'Remove';
+                        removeBtn.onclick = () => removeIngredient(item);
+
+                        li.appendChild(removeBtn);
                         list.appendChild(li);
                     });
                 });
-        }
+}
+
 
         function addIngredient() {
             const input = document.getElementById('ingredient-input');
@@ -67,11 +90,35 @@
                     } else {
                         data.matching_recipes.forEach(recipe => {
                             const li = document.createElement('li');
-                            li.textContent = recipe.name;
+                            li.classList.add('recipe-item');
+
+                            const img = document.createElement('img');
+                            img.src = recipe.image || '/static/default.jpg';  // <- fixed
+                            img.alt = recipe.name;
+                            img.classList.add('recipe-thumb');
+
+                            const link = document.createElement('a');
+                            link.href = `/recipe/${recipe.id}`;
+                            link.textContent = recipe.name;
+
+                            li.appendChild(img);
+                            li.appendChild(link);
                             list.appendChild(li);
                         });
                     }
                 });
+        }
+
+        function removeIngredient(ingredient) {
+            fetch('/api/pantry/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ingredient: ingredient })
+            })
+            .then(res => res.json())
+            .then(data => {
+                loadPantry();
+            });
         }
     </script>
 </body>
