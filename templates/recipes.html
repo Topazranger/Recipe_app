@@ -1,15 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>All Recipes</title>
+
+    <!-- your main stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- page-specific styles -->
+    <style>
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .recipe-card {
+            text-align: center;
+            background: #f7f7f7;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,.08);
+            transition: transform .15s;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .recipe-thumb {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* remove link underline / inherit color */
+        .recipe-card a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
     <h1>All Recipes</h1>
-    <ul>
+
+    <div class="recipe-grid">
         {% for recipe in recipes %}
-            <li><a href="{{ url_for('recipe_detail', recipe_id=recipe['id']) }}">{{ recipe['name'] }}</a></li>
+            <div class="recipe-card">
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe['id']) }}">
+                    <img
+                        src="{{ recipe['image'] or url_for('static', filename='default.jpg') }}"
+                        alt="{{ recipe['name'] }}"
+                        class="recipe-thumb"
+                    >
+                    <div>{{ recipe['name'] }}</div>
+                </a>
+            </div>
         {% endfor %}
-    </ul>
-    <p><a href="{{ url_for('mainmenu') }}">← Back to main menu</a></p>
+    </div>
+
+    <p style="text-align:center; margin-top: 40px;">
+        <a href="{{ url_for('mainmenu') }}">← Back to main menu</a>
+    </p>
 </body>
 </html>

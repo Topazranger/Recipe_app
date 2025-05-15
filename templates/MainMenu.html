@@ -10,12 +10,25 @@
 <body>
     <h1>Welcome, {{ username }}!</h1>
     <form id="menuForm">
-        <button type="button" onclick="window.location.href='{{ url_for('pantry_page') }}'">Pantry</button>
-        <button type="button" onclick="window.location.href='{{ url_for('all_recipes') }}'">Recipes</button>
-        <button type="button" onclick="window.location.href='{{ url_for('shoppinglist') }}'">Shopping List</button>
-        <button type="button" onclick="window.location.href='{{ url_for('timer') }}'">Timers</button>
-        <button type="button" onclick="window.location.href='#'">Settings</button>
-        <button type="button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+        <button type="button" onclick="window.location.href='{{ url_for('pantry_page') }}'">
+            <img src="https://img.icons8.com/?size=100&id=9r0gko6LsK2R&format=png&color=000000" alt="Pantry Icon" class="menu-icon">
+            Pantry
+        </button>        
+        <button type="button" onclick="window.location.href='{{ url_for('all_recipes') }}'">Recipes
+            <img src="https://img.icons8.com/?size=100&id=idEQE7TsG0NA&format=png&color=000000" alt="Recipe Icon" class="menu-icon">
+        </button>
+        <button type="button" onclick="window.location.href='{{ url_for('shoppinglist') }}'">Shopping List
+            <img src="https://img.icons8.com/?size=100&id=CE7rP-35_XQR&format=png&color=000000" alt="Shopping List Icon" class="menu-icon">
+        </button>
+        <button type="button" onclick="window.location.href='{{ url_for('timer') }}'">Timer
+            <img src="https://img.icons8.com/?size=100&id=6902&format=png&color=000000" alt="Timer Icon" class="menu-icon">
+        </button>
+        <button type="button" onclick="window.location.href='#'">Settings
+            <img src="https://img.icons8.com/?size=100&id=364&format=png&color=000000" alt="Settings Icon" class="menu-icon">
+        </button>
+        <button type="button" onclick="window.location.href='{{ url_for('logout') }}'">Logout
+            <img src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000" alt="Logout Icon" class="menu-icon">
+        </button>
     </form>
 </body>
 </html>
