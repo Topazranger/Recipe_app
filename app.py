@@ -40,6 +40,11 @@ with open('static/recipes_data.json', 'r') as f:
     recipe_data = json.load(f)
     recipes = recipe_data['recipes']  # Adjust depending on structure
 
+ALL_INGREDIENTS = set()
+for r in recipes:
+    for ing in r.get("ingredients", []):
+        ALL_INGREDIENTS.add(ing)
+
 # Create DB Tables
 with app.app_context():
     db.create_all()
@@ -172,7 +177,13 @@ def recipe_detail(recipe_id):
     return "Recipe not found", 404
 
 
-print("Current working directory:", os.getcwd())
+@app.route("/api/ingredients/search")
+def ingredient_search():
+    q = request.args.get("q", "").strip().lower()
+    if not q:
+        return jsonify(suggestions=[])
+    matches = [ing for ing in ALL_INGREDIENTS if q in ing.lower()]
+    return jsonify(suggestions=matches[:10])     # first 10 matches only
 
 
 # Run server

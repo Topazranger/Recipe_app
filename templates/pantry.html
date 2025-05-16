@@ -24,7 +24,21 @@
 </head>
 <body class="pantry-page">
     <h1>My Pantry</h1>
-    <input type="text" id="ingredient-input" placeholder="Enter ingredient">
+    <div style="position:relative; max-width:300px;">
+        <input  id="ingredient-input"
+                type="text"
+                placeholder="Enter ingredient"
+                oninput="showSuggestions(event)"
+                autocomplete="off">
+        <!-- empty at first -->
+        <ul id="suggestions"
+            style="position:absolute;
+                   top:100%; left:0; right:0;
+                   list-style:none; margin:0; padding:0;
+                   background:#fff; border:1px solid #ccc;
+                   z-index:999;"></ul>
+    </div>
+  
     <button onclick="addIngredient()">Add Ingredient</button>
 
     <ul id="pantry-list"></ul>
@@ -121,5 +135,46 @@
             });
         }
     </script>
+    <script>
+        /* ───── Autocomplete logic ───── */
+        let sugBox = document.getElementById('suggestions');
+        let debounceTimer;
+        
+        function showSuggestions(e) {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
+            if (!query) { sugBox.innerHTML = ''; return; }
+        
+            debounceTimer = setTimeout(() => {
+                fetch(`/api/ingredients/search?q=${encodeURIComponent(query)}`)
+                  .then(r => r.json())
+                  .then(({suggestions}) => renderSuggestions(suggestions));
+            }, 250);
+        }
+        
+        function renderSuggestions(list) {
+            sugBox.innerHTML = '';
+            list.forEach(text => {
+                const li = document.createElement('li');
+                li.textContent = text;
+                li.style.padding = '6px 10px';
+                li.style.cursor  = 'pointer';
+                li.onmouseenter  = () => li.style.background = '#eee';
+                li.onmouseleave  = () => li.style.background = '#fff';
+                li.onclick       = () => {
+                    document.getElementById('ingredient-input').value = text;
+                    sugBox.innerHTML = '';
+                    addIngredient();            // reuse your existing add logic
+                };
+                sugBox.appendChild(li);
+            });
+            /* hide box if nothing */
+            if (list.length === 0) sugBox.innerHTML = '';
+        }
+        /* click outside closes dropdown */
+        document.addEventListener('click', evt => {
+            if (!evt.target.closest('#ingredient-input')) sugBox.innerHTML = '';
+        });
+        </script>        
 </body>
 </html>
