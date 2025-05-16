@@ -51,6 +51,15 @@
             color: white;
             font-weight: bold;
         }
+
+        .list-item button {
+            padding: 4px 8px;
+            font-size: 14px;
+        }
+
+        .list-item span {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -62,6 +71,7 @@
     <ul id="shopping-list"></ul>
 
     <button onclick="window.location.href='{{ url_for('mainmenu') }}'">Back to Menu</button>
+
 
     <script>
         function addItem() {
@@ -83,6 +93,62 @@
             removeBtn.onclick = () => li.remove();
 
             li.appendChild(span);
+            li.appendChild(removeBtn);
+            list.appendChild(li);
+
+            input.value = '';
+        }
+    </script>
+
+    <script>
+        function addItem() {
+            const input = document.getElementById('item-input');
+            const value = input.value.trim();
+            if (!value) return;
+
+            const list = document.getElementById('shopping-list');
+            const li = document.createElement('li');
+            li.classList.add('list-item');
+
+            const span = document.createElement('span');
+            span.textContent = value;
+            span.onclick = () => span.classList.toggle('crossed');
+
+            const quantityWrapper = document.createElement('div');
+            quantityWrapper.style.display = 'flex';
+            quantityWrapper.style.alignItems = 'center';
+            quantityWrapper.style.gap = '5px';
+
+            const minusBtn = document.createElement('button');
+            minusBtn.textContent = '−';
+            minusBtn.onclick = () => {
+                let qty = parseInt(quantityDisplay.textContent);
+                if (qty > 1) quantityDisplay.textContent = qty - 1;
+            };
+
+            const quantityDisplay = document.createElement('span');
+            quantityDisplay.textContent = '1';
+            quantityDisplay.style.minWidth = '20px';
+            quantityDisplay.style.textAlign = 'center';
+
+            const plusBtn = document.createElement('button');
+            plusBtn.textContent = '+';
+            plusBtn.onclick = () => {
+                let qty = parseInt(quantityDisplay.textContent);
+                quantityDisplay.textContent = qty + 1;
+            };
+
+            quantityWrapper.appendChild(minusBtn);
+            quantityWrapper.appendChild(quantityDisplay);
+            quantityWrapper.appendChild(plusBtn);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.classList.add('remove-btn');
+            removeBtn.onclick = () => li.remove();
+
+            li.appendChild(span);
+            li.appendChild(quantityWrapper);
             li.appendChild(removeBtn);
             list.appendChild(li);
 
