@@ -1,0 +1,9 @@
+flask
+flask-sqlalchemy
+flask-bcrypt
+flask-cors
+flake8
+pytest
+pytest-flask
+requests
+python-dotenv
