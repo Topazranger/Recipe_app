@@ -29,4 +29,3 @@ Link to code documentation (Read the Docs):
 
    implementation
    requirements
-   testing
