@@ -8,3 +8,4 @@ pytest-flask
 requests
 python-dotenv
 sphinx
+sphinx-rtd-theme
