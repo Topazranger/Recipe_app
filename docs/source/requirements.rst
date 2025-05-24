@@ -31,3 +31,4 @@ Changes During Development
 
 - Web scraping was replaced with a curated local JSON-based recipe dataset to reduce development time and complexity.
 - The focus shifted toward implementing core pantry and recipe functionality over advanced features like nutritional breakdown APIs or real-time scraping.
+- Not enough time to implement all Non-Functional requirements such as text adjustments.
