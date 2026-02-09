@@ -7,8 +7,5 @@ pytest
 pytest-flask
 requests
 python-dotenv
-<<<<<<< HEAD
-Sphinx
-=======
 sphinx
->>>>>>> 5d0a78134d18c4d92092d64218ed17b781d05fa7
+sphinx_rtd_theme
